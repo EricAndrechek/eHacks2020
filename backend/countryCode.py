@@ -4,13 +4,12 @@ code_chart = [{"name":"Afghanistan","alpha-2":"AF","alpha-3":"AFG","country-code
 def fix(name):
     name = name.strip()
     name = name.lower()
-    name = name.title()
     return name
 
 
 def to_code(name): #remove whitespace, lowercase, capatalize first letter,
     y = fix(name)
     for x in code_chart:
-        if x["name"] == y:
+        if x["name"].lower() == y:
             return True, x["alpha-3"]
     return False, name

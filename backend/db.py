@@ -20,12 +20,8 @@ def get_id(id):
         return False
     try:
         new_requests = []
-        for item in requests[id]:
-            item_data = requests[id][item].split(', ')
-            new_item_data = []
-            for thing in item_data:
-                new_item_data.append(thing.replace('\'', ''))
-            new_requests.append({item: new_item_data})
+        for category in requests[id]:
+            new_requests.append({category: requests[id][category].split(', ')})
         return new_requests
     except KeyError:
         return False
@@ -63,7 +59,7 @@ def add_request(id, category, name):
 
 # Here is how all these functions will work:
 
-# add_incident('USA', 15, 'blue', True)
-# add_request('0db5a17b2a7c49bfbf7718051f17949a', 'items', 'n95 masks')
+# add_incident('Phoenix, Arizona, USA', 29, 'green', False)
+# add_request('b38ec649600b4c83bbe18801d0ccb45c', 'services', 'food distribution')
 # get_id('0db5a17b2a7c49bfbf7718051f17949a')
 # get_all()

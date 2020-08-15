@@ -20,6 +20,7 @@ def specific_disaster_data():
 @app.route('/add', methods = ["POST"])
 def add_disaster():
     location = request.form.get('location', False)
+    description = request.form.get('description', False)
     try:
         damages = int(request.form.get('damages', False))
     except ValueError:
@@ -27,10 +28,10 @@ def add_disaster():
     color = request.form.get('color', False)
     ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     print(ip)
-    if color and damages and location:
+    if color and damages and description and location:
         highlighted, location = to_code(location)
         if pass_address(ip, location) or ip == "76.112.42.21" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
-            return add_incident(location, damages, color, highlighted)
+            return add_incident(location, damages, description, color, highlighted)
         else:
             return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
 

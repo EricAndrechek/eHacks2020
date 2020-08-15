@@ -26,11 +26,12 @@ def get_id(id):
     except KeyError:
         return False
 
-def add_incident(location, damages, color, highlighted):
+def add_incident(location, damages, description, color, highlighted):
     id = uuid.uuid4().hex
     data = {
         "color": color,
         "damages": damages,
+        "description": description,
         "location": location,
         "highlighted": highlighted
     }
@@ -59,7 +60,7 @@ def add_request(id, category, name):
 
 # Here is how all these functions will work:
 
-# add_incident('Phoenix, Arizona, USA', 29, 'green', False)
+# add_incident('Phoenix, Arizona, USA', 29, 'description', 'green', False)
 # add_request('b38ec649600b4c83bbe18801d0ccb45c', 'services', 'food distribution')
 # get_id('0db5a17b2a7c49bfbf7718051f17949a')
 # get_all()

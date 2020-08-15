@@ -4,14 +4,14 @@ import './App.css';
 import MapContainer from './MapContainer';
 
 function App() {
-  return (
-    <div className="App">
-      <div className="landing">
-        
-      </div>
-      <MapContainer />
-    </div>
-  );
+	return ( 
+		<div className = "App" >
+			<div className = "landing" >
+				 
+			</div> 
+			<MapContainer />
+		</div>
+	);
 }
 
 export default App;

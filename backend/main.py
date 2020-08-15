@@ -20,14 +20,38 @@ def specific_disaster_data():
 @app.route('/add', methods = ["POST"])
 def add_disaster():
     location = request.form.get('location', False)
-    damages = int(request.form.get('damages', False)) or False
+    try:
+        damages = int(request.form.get('damages', False))
+    except ValueError:
+        return "Error: damages must be a number"
     color = request.form.get('color', False)
     ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     print(ip)
     if color and damages and location:
         highlighted, location = to_code(location)
-        if pass_address(ip, location):
+        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
             return add_incident(location, damages, color, highlighted)
+        else:
+            return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
+
+    else:
+        return "Error: not all data was received"
+
+@app.route('/request', methods = ["POST"])
+def request_things():
+    uuid = request.form.get('uuid', False)
+    category = request.form.get('category', False)
+    item = request.form.get('item', False)
+    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    print(ip)
+    if uuid and category and item:
+        location = None
+        try:
+            get_all()[uuid]
+        except KeyError:
+            return "Error: disaster must be created before you can request things for it"
+        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
+            return add_request(uuid, category, item)
         else:
             return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
 

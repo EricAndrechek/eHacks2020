@@ -8,13 +8,16 @@ def pass_address(ip, location):
 
     response = requests.request("GET", url).json()
     
-    country_code = response["country_code_iso3"]
+    try:
+        country_code = response["country_code_iso3"]
 
-    city = response["city"].lower()
+        city = response["city"].lower()
 
-    region = response["region"].lower()
+        region = response["region"].lower()
 
-    if country_code == location or city in location.lower() or region in location.lower():
-        return True
-    return False
+        if country_code == location or city in location.lower() or region in location.lower():
+            return True
+        return False
+    except KeyError:
+        return False
 

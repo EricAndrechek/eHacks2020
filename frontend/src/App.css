@@ -1,9 +1,153 @@
+*{
+  -ms-overflow-style: none;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode: forwards;
+  -ms-animation-fill-mode: forwards;
+  -o-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+html, body {
+  overflow-x: hidden
+}
+
+.b:hover {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
 .App {
   text-align: center;
+  overflow: auto;
+  background: #333232;
 }
 
 .landing {
   height: 100vh;
   width: 100vw;
-  background-color: #333232
+  background-image: url('./assets/landing.jpg');
+}
+
+.hook {
+  color: white;
+  font-size: 70px;
+  position: absolute;
+  top: 22vh;
+  left: -40vw;
+  animation-name: left;
+  animation-duration: 1.5s;
+  animation-delay: 1s;
+}
+
+.description {
+  color: white;
+  position: absolute;
+  top: 42vh;
+  text-align: left;
+  left: -50vw;
+  animation-name: left;
+  animation-duration: 1.5s;
+  animation-delay: 1.5s;
+}
+
+@keyframes left {
+  from { left: -40vw; opacity: 0%; }
+  to { left: 70px; opacity: 100%; }
+}
+
+.logo {
+  position: absolute;
+  top: 33vh;
+  right: 20vw;
+  width: 150px;
+  height: 150px;
+  background-image: url('./assets/logo.png');
+  background-size: 150px;
+  animation-name: bounce;
+  animation-duration: 2s;
+  animation-delay: 2s;
+}
+
+@keyframes bounce {
+  0%   { transform: scale(1,1)      translateY(0); }
+  10%  { transform: scale(1.1,.9)   translateY(0); }
+  30%  { transform: scale(.9,1.1)   translateY(-100px); }
+  50%  { transform: scale(1.05,.95) translateY(0); }
+  57%  { transform: scale(1,1)      translateY(-7px); }
+  64%  { transform: scale(1,1)      translateY(0); }
+  100% { transform: scale(1,1)      translateY(0); }
+}
+
+.info {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  table-layout: fixed;
+  position: absolute;
+  top: 65vh
+}
+
+.infoPiece {
+  width: 270px;
+  margin: 0 80px 0 80px
+}
+
+.wave {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+}
+
+.mapContainer {
+  margin: auto;
+}
+
+.legendContainer {
+  background-color: transparent;
+  height: 100vh;
+  margin-left: 70%;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  padding-right: 60px;
+  color: white;
+  text-align: center;
+}
+
+.hovering {
+  background-color: white;
+  padding: 20px 20px 0px 20px;
+  border-radius: 10px;
+  height: 200px;
+  color: black;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px
+}
+
+.legend {
+  background-color: #eeeeee;
+  padding: 20px;
+  height: 160px;
+  color: black;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  border-radius: 10px;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 5px;
+}
+
+.submit {
+  width: 100%;
+  height: 40px;
+  background-color: orangered;
+  font-size: 22px;
+  border-radius: 5px;
 }

@@ -33,7 +33,7 @@ html, body {
 
 .hook {
   color: white;
-  font-size: 70px;
+  font-size: 60px;
   position: absolute;
   top: 22vh;
   left: -40vw;
@@ -51,6 +51,8 @@ html, body {
   animation-name: left;
   animation-duration: 1.5s;
   animation-delay: 1.5s;
+  font-size: 20px;
+  margin: 2
 }
 
 @keyframes left {
@@ -60,11 +62,10 @@ html, body {
 
 .logo {
   position: absolute;
-  top: 33vh;
-  right: 20vw;
-  width: 150px;
-  height: 150px;
-  background-image: url('./assets/logo.png');
+  top: 0vh;
+  right: 5vw;
+  width: 600px;
+  height: 600px;
   background-size: 150px;
   animation-name: bounce;
   animation-duration: 2s;
@@ -120,7 +121,7 @@ html, body {
   background-color: white;
   padding: 20px 20px 0px 20px;
   border-radius: 10px;
-  height: 200px;
+  height: 210px;
   color: black;
   align-items: center;
   justify-content: center;
@@ -128,9 +129,9 @@ html, body {
 }
 
 .legend {
-  background-color: #eeeeee;
+  background-color: #222;
   padding: 20px;
-  height: 160px;
+  height: 215px;
   color: black;
   align-items: center;
   justify-content: center;
@@ -150,4 +151,10 @@ html, body {
   background-color: orangered;
   font-size: 22px;
   border-radius: 5px;
+}
+
+.popupContainer {
+  padding: 30px;
+  color: black;
+  text-align: left;
 }

@@ -5,6 +5,8 @@ import Wave from 'react-wavify';
 import Knowledge from './assets/knowledge.png';
 import Disaster from './assets/disaster.png';
 import Helper from './assets/helper.png';
+import Logo from './assets/logo.png'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 	return ( 
@@ -13,11 +15,11 @@ function App() {
 				 <h1 className="hook">
 					 People Need Help.
 				 </h1>
-				 <h3 className="description">
+				 <p className="description">
 					 And we're hardwired to help each other in times of need. <br />
 					 Whether it be an earthquake or a rise of a dictator, [App Name] is here to help!
-				 </h3>
-				 <div className="logo" />
+				 </p>
+				 <img src={Logo} className="logo" />
 			</div> 
 			<div className="info">
 				<div className="infoPiece">
@@ -26,7 +28,7 @@ function App() {
 				</div>
 				<div className="infoPiece">
 					<img src={Disaster} style={{ width: 100, height: 100 }}/>
-					<p style={{ margin: 2, color: 'white' }}>Understand where you can help best</p>
+					<p style={{ margin: 2, color: 'white' }}>Understand how your resources are best used</p>
 				</div>
 				<div className="infoPiece">
 					<img src={Helper} style={{ width: 100, height: 100 }}/>

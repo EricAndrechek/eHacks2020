@@ -2,18 +2,32 @@ import React, { Component } from 'react';
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import { mapsKey } from '../src/secrets'
 import './App.css'
+import Popup from 'reactjs-popup';
+import { Form, Button } from 'react-bootstrap'
+import ReactDOM from 'react-dom';
 
 const geoUrl = 'https://raw.githubusercontent.com/AshKyd/geojson-regions/master/countries/50m/'
 
 class MapContainer extends Component {
 
     colorDisaster = {
-        green: "Deforestation",
+        green: "Deforestation/Wildfire",
         blue: "Hurricane/Tsunami",
-        orange: "Wildfire",
+        orange: "Pandemic",
         brown: 'Earthquake',
         gray: 'Pollution',
-        red: 'Human Rights Violation'
+        red: 'Human Rights Violation',
+        pink: 'Terrorist Attack/Explosion'
+    }
+
+    disasterColor = {
+        "Deforestation/Wildfire": "green",
+        "Hurricane/Tsunami": "blue",
+        "Pandemic": "orange",
+        'Earthquake': 'brown',
+        'Pollution': 'gray',
+        'Human Rights Violation': 'red',
+        'Terrorist Attack/Explosion': 'pink'
     }
 
     state = {
@@ -22,19 +36,21 @@ class MapContainer extends Component {
         activeMarker: {},
         selectedPlace: {},
         clickedAddress: "Hover on a marker",
+        loc: "",
+        descrip: "",
         data: [
             {
                 "id": "312hjhjh12",
                 "location": "BLR", // could also be like "Okemos, Michigan, USA" if local
                 "color": "red", // color name in lowercase, but if a color hex code is easier I can do that
                 "damages": 15, // integer of damages in millions
-                "description": "A dictator has established control in Beirut. People claim that the elections were completely faked.",
+                "description": "A dictator has established control in Belarus. People claim that the elections were completely faked.",
                 "highlighted": true
             },
             {
                 "id": "djhfg82934h",
                 "location": "Beirut, Lebanon",
-                "color": "orange",
+                "color": "pink",
                 "damages": 29,
                 "description": "A massive explosion rocked Beirut. Several hundreds have died. Till now, no one knows the cause of the accident!" ,
                 "highlighted": false
@@ -113,6 +129,22 @@ class MapContainer extends Component {
         this.setState({ ready: true })
     }
 
+    sendDisaster = () => {
+        const type = ReactDOM.findDOMNode(this.select).value
+        const form = new FormData()
+        form.append("location", this.loc.value)
+        form.append("stat", this.stat.value)
+        form.append("description", this.descrip.value)
+        form.append("color", this.disasterColor[type])
+        fetch('url', {
+            method: 'POST',
+            body: form,
+            redirect: 'follow'
+        })
+
+        console.log(this.loc.value, this.disasterColor[type], this.descrip.value, this.stat.value)
+    }
+
 
     render() {
         return (
@@ -143,22 +175,62 @@ class MapContainer extends Component {
                     <h1>Disasters all over the World</h1>
                     <p>Discover tragedies you've never heard about by clicking on them and learn what you can do to help!</p>
                     <div className="hovering">
-                        <h2 style={{ textAlign: 'center', margin: 2 }}>{this.state.selectedPlace.name}</h2>
+                        <h4 style={{ textAlign: 'center', margin: 1 }}>{this.state.selectedPlace.name}</h4>
                         <p style={{ color: this.state.selectedPlace.color, margin: 5 }}><i>{this.colorDisaster[this.state.selectedPlace.color]}</i></p>
                         <p>{this.state.selectedPlace.description}</p>
                         <button className="b" style={{ marginBottom: 10, borderRadius: 5, backgroundColor: 'blue', color: 'white' }}>Learn More</button>
                     </div>
                     <div className="legend">
-                        <h2 style={{ margin: 0, marginBottom: 10 }}>Legend</h2>
+                        <h2 style={{ margin: 0, marginBottom: 10, color: 'white' }}>Legend</h2>
                         <div className="keys">
                             {
                                 Object.keys(this.colorDisaster).map((key) => (
-                                    <p style={{ color: key, marginTop: 4, marginBottom: 4 }}>{this.colorDisaster[key]}</p>
+                                    <p style={{ color: key, marginTop: 3, marginBottom: 3 }}>{this.colorDisaster[key]}</p>
                                 ))
                             }
                         </div>
                     </div>
-                    <button className="submit b">Submit a New Disaster</button>
+                    <Popup modal trigger={<button className="submit b">Submit a New Disaster</button>} position="center center">
+                        <div className="popupContainer">
+                            <h1 style={{ margin: 0, marginBottom: 10, textAlign: 'center' }}>Submit a Disaster</h1>
+                            <Form>
+                                <Form.Group>
+                                    <Form.Label>Disaster Location</Form.Label>
+                                    <Form.Control
+                                        placeholder="Enter the Country / City"
+                                        ref={loc => { this.loc = loc }} />
+                                </Form.Group>
+                                <Form.Group controlId="exampleForm.ControlSelect1">
+                                    <Form.Label>Select type</Form.Label>
+                                    <Form.Control ref={select => { this.select = select }} as="select">
+                                        <option>Deforestation/Wildfire</option>
+                                        <option>Hurricane/Tsunami</option>
+                                        <option>Pandemic</option>
+                                        <option>Earthquake</option>
+                                        <option>Pollution</option>
+                                        <option>Human Rights Violation</option>
+                                        <option>Terrorist Attack/Explosion</option>
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group controlId="exampleForm.ControlTextarea1">
+                                    <Form.Label>Description</Form.Label>
+                                    <Form.Control 
+                                        ref={descrip => { this.descrip = descrip }}
+                                        placeholder="Write a 1-2 sentence blurb about what happened"
+                                        as="textarea" rows="3" />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Name an eye-catching statistic</Form.Label>
+                                    <Form.Control 
+                                        ref={stat => { this.stat = stat }}
+                                        placeholder="Ex: $25M in damages were done..." />
+                                </Form.Group>
+                                <Button variant="primary" type="submit" onClick={this.sendDisaster}>
+                                    Submit
+                                </Button>
+                            </Form>
+                        </div>
+                    </Popup>
                 </div>
             </div>
         );

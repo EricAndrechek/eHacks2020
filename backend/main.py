@@ -15,6 +15,12 @@ def specific_disaster_data():
             data = {"error": "not a valid id"}
     return jsonify(data)
 
+@app.route('/add', methods = ["POST"])
+def add_disaster():
+    location = request.form.get('location', False)
+    damages = request.form.get('damages', False)
+    color = request.form.get('color', False)
+    
 
-if    __name__ == '__main__':
+if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

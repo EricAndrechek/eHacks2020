@@ -12,5 +12,5 @@ def to_code(name): #remove whitespace, lowercase, capatalize first letter,
     y = fix(name)
     for x in code_chart:
         if x["name"] == y:
-            return x["alpha-3"]
-    return name
+            return True, x["alpha-3"]
+    return False, name

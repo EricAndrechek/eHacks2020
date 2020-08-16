@@ -129,9 +129,8 @@ html, body {
 }
 
 .legend {
-  background-color: #222;
+  background-color: #ffffff;
   padding: 20px;
-  height: 215px;
   color: black;
   align-items: center;
   justify-content: center;

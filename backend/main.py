@@ -1,9 +1,13 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
 from db import get_all, get_id, add_incident, add_request
 from countryCode import to_code
 from ipchecker import pass_address
 
 app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return redirect('https://dhi.vercel.app')
 
 @app.route("/all", methods = ['GET'])
 def all_disaster_data():

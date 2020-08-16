@@ -27,7 +27,7 @@ def add_disaster():
     print(ip)
     if color and stat and description and location:
         highlighted, location = to_code(location)
-        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
+        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
             return add_incident(location, stat, description, color, highlighted)
         else:
             return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
@@ -48,7 +48,7 @@ def request_things():
             get_all()[uuid]
         except KeyError:
             return "Error: disaster must be created before you can request things for it"
-        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
+        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
             return add_request(uuid, category, item)
         else:
             return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'

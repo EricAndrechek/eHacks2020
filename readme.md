@@ -14,7 +14,7 @@ In addition to struggling to keep track of disasters in the world, many are not 
 ### What it does
 DHI displays a map of the world, showing you a large collection of all the current disasters with a legend to categorize which one each falls under. You can also click on a disaster to get more information about it, including some stats and a description.
 
-![Map Demo](logos/map-demo-prty.png)
+![Map Demo](logos/map-demo-sat.png)
 
 In addition to displaying stats and a description for each disaster, DHI shows you various categories and items that locals in the error have requested that you can do to help. Some of these may be items you could pay for for them, or something simple like writing to your congressional representative to help enact support from the government. 
 
@@ -24,7 +24,7 @@ We chose to separate our project into a frontend and backend, both hosted separa
 
 ![Server Architecture](logos/server-setup.png)
 
-The frontend is a React app running on Vercel ([dhi.vercel.app](https://dhi.vercel.app)). It uses the Google Maps API to automatically turn the location into geolocation coordinates that can be displayed on the map.
+The frontend is a React app running on Vercel ([e-hacks2020.vercel.app](https://e-hacks2020.vercel.app)). It uses the Google Maps API to automatically turn the location into geolocation coordinates that can be displayed on the map.
 
 The backend is a Python Flask app running on a Ubuntu server configured with an Nginx proxy. It uses Firebase Realtime Database to store the disasters and requests. It uses [ipapi.co](https://ipapi.co) to find and verify IP addresses. 
 ### Challenges we ran into

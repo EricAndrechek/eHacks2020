@@ -1,11 +1,12 @@
 # Disaster Help Index
-![Disaster Help Index Logo](logos/dhi-both.png)
+
+![Disaster Help Index Logo](logos/dhi-both-removebg-short.png)
 ## The one-stop website to see world disasters and events and learn how you can best help
 
 ### Inspiration
 As 2020 started off with wildfires in Australia, and February moved to a terrible locust outbreak in Africa, followed by millions placed into quarantine in Italy due to the Covid-19 outbreak, 2020 has been rough. 
 
-![2020 Calendar Meme](logos/leaked-rest-of-2020-calendar-meme.jpg | width=100)
+<div style="text-align: center; margin-bottom: 10px;"><img alt="2020 Calendar Meme" src="logos/leaked-rest-of-2020-calendar-meme.jpg" width="50%"></div>
 
 We decided that there were so many events going on in 2020, it was hard to keep track of what was happening where, and knowing how you could help. That's why we made Disaster Help Index, or DHI.
 
@@ -29,6 +30,7 @@ The backend is a Python Flask app running on a Ubuntu server configured with an 
 ### Challenges we ran into
 On the backend said, Nginx was passing all IP addresses to the Flask server as localhost, which makes sense as it is a proxy. This was solved by adding headers to the proxy_pass and forwarding them to the Flask app.
 
+![Nginx Config](logos/nginx.png)
 On the frontend side, we had quite a few issues in both rendering maps properly as well as sending all the data to the backend. Both of these issues were fixed with teamwork, perseverance, and a lot of reading through error logs.
 ### Accomplishments that we're proud of
 We are incredibly happy to have our entire project finished and fully functional with a demo anyone could use. 

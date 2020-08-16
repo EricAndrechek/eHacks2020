@@ -1,13 +1,15 @@
 from flask import Flask, jsonify, request, redirect
+from flask_cors import CORS, cross_origin
 from db import get_all, get_id, add_incident, add_request
 from countryCode import to_code
 from ipchecker import pass_address
 
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/')
 def home():
-    return redirect('https://dhi.vercel.app')
+    return redirect('https://e-hacks2020.vercel.app')
 
 @app.route("/all", methods = ['GET'])
 def all_disaster_data():

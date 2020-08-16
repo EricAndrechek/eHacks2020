@@ -51,7 +51,7 @@ def request_things():
         if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
             return add_request(uuid, category, item)
         else:
-            return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
+            return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN', 527
 
     else:
         return "Error: not all data was received"

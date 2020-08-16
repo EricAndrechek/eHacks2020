@@ -5,7 +5,7 @@
 ### Inspiration
 As 2020 started off with wildfires in Australia, and February moved to a terrible locust outbreak in Africa, followed by millions placed into quarantine in Italy due to the Covid-19 outbreak, 2020 has been rough. 
 
-![2020 Calendar Meme](logos/leaked-rest-of-2020-calendar-meme.jpg)
+![2020 Calendar Meme](logos/leaked-rest-of-2020-calendar-meme.jpg | width=100)
 
 We decided that there were so many events going on in 2020, it was hard to keep track of what was happening where, and knowing how you could help. That's why we made Disaster Help Index, or DHI.
 

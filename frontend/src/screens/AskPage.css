@@ -1,0 +1,36 @@
+body {
+  background-color: #333232;
+}
+
+.requestForm {
+  float: left;
+  padding: 20px;
+  color: white;
+  margin-top: 200px;
+  width: 230px;
+  text-align: center;
+}
+
+.currentRequests {
+  float: left;
+  color: white;
+  padding: 20px;
+}
+.currentHeader {
+  margin-bottom: 65px;
+}
+.actualText {
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 7px;
+}
+.helpButton {
+  float: right;
+  margin-left: 10px;
+  margin-right: -50px;
+  margin-top: -5px;
+  border-radius: 7px;
+  padding: 4px;
+  background-color: rgb(160, 160, 160);
+}

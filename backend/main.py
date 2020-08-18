@@ -1,9 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
+from flask_cors import CORS, cross_origin
 from db import get_all, get_id, add_incident, add_request
 from countryCode import to_code
 from ipchecker import pass_address
 
 app = Flask(__name__)
+cors = CORS(app)
+
+@app.route('/')
+def home():
+    return redirect('https://e-hacks2020.vercel.app')
 
 @app.route("/all", methods = ['GET'])
 def all_disaster_data():
@@ -51,7 +57,7 @@ def request_things():
         if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
             return add_request(uuid, category, item)
         else:
-            return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN'
+            return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN', 527
 
     else:
         return "Error: not all data was received"

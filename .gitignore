@@ -5,3 +5,5 @@ backend/__pycache__/
 
 /frontend/package.json
 /frontend/package-lock.json
+
+.vercel

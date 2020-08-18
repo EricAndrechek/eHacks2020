@@ -21,7 +21,7 @@ class Home extends Component {
 					 </h1>
 					 <p className="description">
 						 And we're hardwired to help each other in times of need. <br />
-						 Whether it be an earthquake or a rise of a dictator, [App Name] is here to help!
+						 Whether it be an earthquake or a rise of a dictator, Disaster Help Index is here to help!
 					 </p>
 					 <img src={Logo} className="logo" />
 				</div> 

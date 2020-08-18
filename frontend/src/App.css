@@ -36,8 +36,7 @@ html, body {
   font-size: 60px;
   position: absolute;
   top: 22vh;
-  left: -40vw;
-  animation-name: left;
+  left: 70px;
   animation-duration: 1.5s;
   animation-delay: 1s;
 }
@@ -47,8 +46,7 @@ html, body {
   position: absolute;
   top: 42vh;
   text-align: left;
-  left: -50vw;
-  animation-name: left;
+  left: 70px;
   animation-duration: 1.5s;
   animation-delay: 1.5s;
   font-size: 20px;
@@ -121,7 +119,6 @@ html, body {
   background-color: white;
   padding: 20px 20px 0px 20px;
   border-radius: 10px;
-  height: 210px;
   color: black;
   align-items: center;
   justify-content: center;

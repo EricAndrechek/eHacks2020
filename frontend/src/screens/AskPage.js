@@ -6,19 +6,21 @@ import Wave from 'react-wavify';
 export default class AskPage extends Component {
 
   state = {
-    data: [],
-    loaded: false
+    data: [{ "Categ": ["example"] }],
+    loaded: false,
+    error: ""
   }
 
   componentDidMount() {
     this.id = this.props.location.state.id;
+    window.scrollTo(0, 0);
     this.getData()
   }
 
   getData = () => {
     fetch('https://dhi.andrechek.com/get?id=' + this.props.location.state.id)
     .then(res => res.json())
-    .then(res => this.setState({ data: res[0], loaded: true }))
+    .then(res => this.setState({ data: res, loaded: true }))
   }
 
   request = (e) => {
@@ -30,11 +32,20 @@ export default class AskPage extends Component {
     fetch("https://dhi.andrechek.com/request", {
       method: 'POST',
       body: form
+    }).then(async(res) => {
+      if (res.status === 527) {
+        const error = await res.text()
+        this.setState({ error })
+      }
     })
 
     this.getData()
 
-    e.preventDefault()
+    try {
+      e.preventDefault()
+    } catch (e) {
+
+    }
   }
 
   render() {
@@ -57,10 +68,11 @@ export default class AskPage extends Component {
                       placeholder="A list of items you need and why you need them"
                       as="textarea" rows="5" />
               </Form.Group>
-              <Button variant="primary" type="submit" onClick={e => this.request(e)}>
-                  Submit
-              </Button>
             </Form>
+            <Button variant="primary" type="submit" onClick={e => this.request(e)}>
+                Submit
+            </Button>
+            <p style={{ marginTop: 5 }}>{this.state.error}</p>
           </div>
           <Wave 
             fill="red"
@@ -75,23 +87,23 @@ export default class AskPage extends Component {
           />
         </div>
         {
-          this.state.loaded ? (
+          this.state.loaded && (
             <div className="currentRequests">
               <h1 className="currentHeader">Provide Help to Others</h1>
               {
-                Object.keys(this.state.data).map(categ => (
+                this.state.data.map(categ => (
                   <div>
-                    <h3>{categ}</h3>
+                    <h3>{Object.keys(categ)[0]}</h3>
                     <ul>
                       {
-                        this.state.data[categ].map(req => <li>{req}</li>)
+                        categ[Object.keys(categ)[0]].map(req => <li>{req}</li>)
                       }
                     </ul>
                   </div>
                 ))
               }
             </div>
-          ) : null
+          ) 
         }
       </div>
     );

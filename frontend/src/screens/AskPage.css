@@ -16,8 +16,8 @@ html, body {
 
 .waveAsk {
   position: absolute;
-  left: -20vw;
-  width: 100vw;
+  left: -22vw;
+  width: 90vw;
   transform: rotate(90deg);
 }
 

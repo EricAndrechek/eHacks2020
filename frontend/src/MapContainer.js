@@ -67,7 +67,7 @@ class MapContainer extends Component {
     getCoords = (need_coords) => {
         if (need_coords.length !== 0) {
             const disaster = this.state.data[need_coords[0]]
-            fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${disaster.location}&key=${mapsKey}&sensor=false`)
+            fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/textsearch/json?query=${disaster.location}&key=${mapsKey}&sensor=false`)
                 .then(res => res.json())
                 .then(res => {
                     const coord = res.results[0].geometry.location;
@@ -129,6 +129,7 @@ class MapContainer extends Component {
             })
         })
 
+        map.data.addListener("onclick", event => this.navigate())
         this.setState({ ready: true })
     }
 
@@ -156,7 +157,11 @@ class MapContainer extends Component {
             }
         })
 
-        e.preventDefault()
+        try {
+            e.preventDefault()
+        } catch(error) {
+
+        }
     }
 
 
@@ -179,6 +184,7 @@ class MapContainer extends Component {
                                     <Marker
                                         name={this.state.data[key].location}
                                         color={this.state.data[key].color}
+                                        stat={this.state.data[key].stat}
                                         description={this.state.data[key].description}
                                         id={key}
                                         onMouseover={this.onMarkerClick}
@@ -197,6 +203,7 @@ class MapContainer extends Component {
                     <div className="hovering">
                         <h4 style={{ textAlign: 'center', margin: 1 }}>{this.state.selectedPlace.name}</h4>
                         <p style={{ color: this.state.selectedPlace.color, margin: 5 }}><i>{this.colorDisaster[this.state.selectedPlace.color]}</i></p>
+                        <p>{this.state.selectedPlace.stat}</p>
                         <p>{this.state.selectedPlace.description}</p>
                         <button onClick={this.navigate} className="b" style={{ marginBottom: 10, borderRadius: 5, backgroundColor: 'blue', color: 'white' }}>Learn More</button>
                     </div>

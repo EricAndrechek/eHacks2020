@@ -1,7 +1,5 @@
 import requests
-
-
-
+import sys
 
 def pass_address(ip, location):
     url = "https://ipapi.co/{}/json/".format(ip)
@@ -14,10 +12,13 @@ def pass_address(ip, location):
         city = response["city"].lower()
 
         region = response["region"].lower()
+        
+        print(city, flush=True)
+        print(region, flush=True)
 
         if country_code == location or city in location.lower() or region in location.lower():
-            return True
-        return False
+            return "ok"
+        return str(city)
     except KeyError:
-        return False
+        return "bru"
 

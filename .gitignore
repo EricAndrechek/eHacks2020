@@ -7,3 +7,5 @@ backend/__pycache__/
 /frontend/package-lock.json
 
 .vercel
+/backend/secrets.py
+/twilio/exports.js

@@ -3,9 +3,8 @@ import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import { mapsKey } from '../src/secrets'
 import './App.css'
 import Popup from 'reactjs-popup';
-import { Form, Button, Spinner } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import ReactDOM from 'react-dom';
-import { url } from './global'
 
 const geoUrl = 'https://raw.githubusercontent.com/AshKyd/geojson-regions/master/countries/50m/'
 
@@ -41,6 +40,7 @@ class MapContainer extends Component {
         preDone: false,
         ready: false,
         showingInfoWindow: false,
+        activeMarker: {},
         selectedPlace: {},
         clickedAddress: "Hover on a marker",
         loc: "",
@@ -48,27 +48,51 @@ class MapContainer extends Component {
         data: {}
     }
 
-    onMarkerClick = (props, marker, e) => {
-        if (props !== this.state.selectedPlace) {
-            this.marker = marker
-            console.log("Updating...")
-            setTimeout(() => this.setState({
-                selectedPlace: props,
-                showingInfoWindow: true
-            }), 500)
-        }
-    }
+    onMarkerClick = (props, marker, e) =>
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
 
     onMapClicked = (props) => {
         if (this.state.showingInfoWindow) {
           this.setState({
             showingInfoWindow: false,
+            activeMarker: null
           })
         }
     };
 
+    getCoords = (need_coords) => {
+        if (need_coords.length !== 0) {
+            const disaster = this.state.data[need_coords[0]]
+            fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/textsearch/json?query=${disaster.location}&key=${mapsKey}&sensor=false`)
+                .then(res => res.json())
+                .then(res => {
+                    const coord = res.results[0].geometry.location;
+                    let data = this.state.data
+                    data[need_coords[0]].coords = coord
+                    this.setState({ data })
+                })
+                .then(() => this.getCoords(need_coords.slice(1, need_coords.length)))
+        } else {
+            this.setState({ preDone: true })
+        }
+    }
+
     pullData = () => {
-        fetch(`${url}/all`).then(res => res.json()).then(res => this.setState({ data: res }, () => this.setState({ preDone: true })))
+        fetch('https://dhi.andrechek.com/all').then(res => res.json()).then(res => this.setState({ data: res }, () => {
+            let need_coords = []
+            Object.keys(this.state.data).forEach(i => {
+                const disaster = this.state.data[i]
+                this.setState({ i })
+                if (!disaster.highlighted) {
+                    need_coords.push(i)
+                } 
+            })
+            this.getCoords(need_coords)
+        }))
     }
 
     onMapReady = ({ google }, map) => {
@@ -105,10 +129,7 @@ class MapContainer extends Component {
             })
         })
 
-        map.data.addListener("click", event => {
-            console.log("I was actually called :o")
-            this.navigate()
-        })
+        map.data.addListener("onclick", event => this.navigate())
         this.setState({ ready: true })
     }
 
@@ -119,11 +140,11 @@ class MapContainer extends Component {
         form.append("stat", this.stat.value)
         form.append("description", this.descrip.value)
         form.append("color", this.disasterColor[type])
-        fetch(`${url}/add`, {
+        fetch('https://dhi.andrechek.com/add', {
             method: 'POST',
             body: form,
             redirect: 'follow'
-        }).then(res => console.log(res)).catch(e => alert(e))
+        }).then(res => console.log(res))
 
         console.log(this.loc.value, this.disasterColor[type], this.descrip.value, this.stat.value)
     }
@@ -169,16 +190,12 @@ class MapContainer extends Component {
                                         onMouseover={this.onMarkerClick}
                                         onClick={e => this.navigate(e)}
                                         icon={require(`./assets/markers/${this.state.data[key].color}-dot.png`)}
-                                        position={{ lat: this.state.data[key].lat, lng: this.state.data[key].lng }}>
+                                        position={this.state.data[key].coords}>
                                     </Marker>
                                 )) : null
                             }
                         </Map>
-                    ) : (
-                        <div style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            <Spinner animation="border" variant="primary" />
-                        </div>
-                    )
+                    ) : null
                 }
                 <div className="legendContainer">
                     <h3>Disasters all over the World</h3>

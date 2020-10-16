@@ -1,4 +1,3 @@
-/frontend/src/secrets.js
 /backend/ehacks-firebase.json
 /backend/serviceAccountCredentials.json
 backend/__pycache__/
@@ -9,3 +8,4 @@ backend/__pycache__/
 .vercel
 /backend/secrets.py 
 /twilio/exports.js
+/frontend/.env

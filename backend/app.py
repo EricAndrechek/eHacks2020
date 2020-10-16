@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request, redirect
 from flask_cors import CORS, cross_origin
-from db import get_all, get_id, add_incident, add_request, get_coords, get_near, get_tags, get_tag
+from db import get_all, get_id, add_incident, add_request, get_coords, get_near, get_tags, get_tag, nlp
 from countryCode import to_code, to_name
 from ipchecker import pass_address
 import sys
 import math
 from secrets import get_maps
+from threading import Thread
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -68,7 +69,10 @@ def request_things():
         except KeyError:
             return "Error: disaster must be created before you can request things for it"
         if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
-            return add_request(uuid, category, item, email, image)
+            request_id = add_request(uuid, category, item, email, image)
+            thread = Thread(target=nlp, kwargs={ 'name': item, 'category': category, 'id': uuid, 'request_id': request_id })
+            thread.start()
+            return 'Added'
         else:
             return 'Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN', 527
 

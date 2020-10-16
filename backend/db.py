@@ -112,7 +112,10 @@ def add_request(id, category, name, email, image):
         print(url)
     else: 
         url = False
-    #Do the NLP stuff
+    datab().child('requests2').child(id).child(request_id).set({ "Title": category, "Description": name, "Email": email, "url": url })
+    return request_id
+
+def nlp(name, category, id, request_id):
     r.extract_keywords_from_text(name)
     r2.extract_keywords_from_text(category)
     phrases = r.get_ranked_phrases()
@@ -124,18 +127,17 @@ def add_request(id, category, name, email, image):
         if tag.lemma_ != "-PRON-":
             print(tag.lemma_)
             datab().child('tags').child(tag.lemma_).push({ "disaster": id, "request": request_id }) 
-    datab().child('requests2').child(id).child(request_id).set({ "Title": category, "Description": name, "Email": email, "url": url })
-    return 'Added'        
 
 def get_tags():
     return list(get_db()['tags'].keys())
 
 def get_tag(tag):
-    info = get_db()['tags'][tag].values()
+    db = get_db()
+    info = db['tags'][tag].values()
     posts = []
     for tag in info:
-        post = get_db()['requests2'][tag['disaster']][tag['request']]
-        post['location'] = get_db()['all'][tag['disaster']]['location']
-        post['color'] = get_db()['all'][tag['disaster']]['color']
+        post = db['requests2'][tag['disaster']][tag['request']]
+        post['location'] = db['all'][tag['disaster']]['location']
+        post['color'] = db['all'][tag['disaster']]['color']
         posts.append(post)
     return posts

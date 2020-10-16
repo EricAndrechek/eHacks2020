@@ -40,7 +40,7 @@ def add_disaster():
         highlighted, location = to_code(location)
         passed = pass_address(ip, location)
         print(passed, flush=True)
-        if passed == "ok" or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "127.0.0.1": # allow localhost and my IP to bypass IP verification
+        if passed == "ok" or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "192.168.86.41" or ip == "192.168.1.80": # allow localhost and my IP to bypass IP verification
             return add_incident(location, stat, description, color, highlighted)
         else:
             print('Error: IP address does not appear to be from the location of the disaster, please ensure you are not using a VPN')
@@ -68,7 +68,7 @@ def request_things():
             location = get_all()[uuid]['location']
         except KeyError:
             return "Error: disaster must be created before you can request things for it"
-        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1": # allow localhost and my IP to bypass IP verification
+        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "192.168.86.41" or ip == "192.168.1.80": # allow localhost and my IP to bypass IP verification
             request_id = add_request(uuid, category, item, email, image)
             thread = Thread(target=nlp, kwargs={ 'name': item, 'category': category, 'id': uuid, 'request_id': request_id })
             thread.start()

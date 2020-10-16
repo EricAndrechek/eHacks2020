@@ -129,15 +129,21 @@ def nlp(name, category, id, request_id):
             datab().child('tags').child(tag.lemma_).push({ "disaster": id, "request": request_id }) 
 
 def get_tags():
-    return list(get_db()['tags'].keys())
+    try:
+        return list(get_db()['tags'].keys())
+    except KeyError:
+        return []
 
 def get_tag(tag):
-    db = get_db()
-    info = db['tags'][tag].values()
-    posts = []
-    for tag in info:
-        post = db['requests2'][tag['disaster']][tag['request']]
-        post['location'] = db['all'][tag['disaster']]['location']
-        post['color'] = db['all'][tag['disaster']]['color']
-        posts.append(post)
-    return posts
+    try:
+        db = get_db()
+        info = db['tags'][tag].values()
+        posts = []
+        for tag in info:
+            post = db['requests2'][tag['disaster']][tag['request']]
+            post['location'] = db['all'][tag['disaster']]['location']
+            post['color'] = db['all'][tag['disaster']]['color']
+            posts.append(post)
+        return posts
+    except KeyError:
+        return []

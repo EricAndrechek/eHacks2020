@@ -1,2 +1,2 @@
-export const url = 'http://127.0.0.1:5000'
+export const url = 'http://2e392d0cd8bc.ngrok.io'
 export const main = 'https://dhi.andrechek.com' 

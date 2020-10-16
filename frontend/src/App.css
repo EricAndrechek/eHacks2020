@@ -154,3 +154,13 @@ html, body {
   color: black;
   text-align: left;
 }
+
+.search {
+  padding: 50px;
+  min-height: 90vh
+}
+
+.locationText {
+  -webkit-text-stroke-width: 0.3px;
+  -webkit-text-stroke-color: black;
+}

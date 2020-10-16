@@ -6,9 +6,16 @@ from countryCode import to_name
 from secrets import get_maps
 import boto3
 import math
+from rake_nltk import Rake, Metric
+import spacy
+from timestamp import PushID
 
 s3 = boto3.resource('s3')
 bucket = s3.Bucket('cong-dhi')
+sp = spacy.load('en_core_web_sm')
+r = Rake(ranking_metric=Metric.WORD_DEGREE)
+r2 = Rake(ranking_metric=Metric.WORD_DEGREE)
+push = PushID()
 
 def datab():
     config = open('ehacks-firebase.json', 'r').read()
@@ -30,13 +37,6 @@ def get_id(id):
         return { "requests": list(requests[id].values()), "details": details }
     except KeyError:
         return { "details": details, "requests": [] }
-    # try:
-    #     new_requests = []
-    #     for category in requests[id]:
-    #         new_requests.append({category: list(requests[id][category].values())})
-    #     return new_requests
-    # except KeyError:
-    #     return False
     
 def get_coords(loc):
     try: 
@@ -104,6 +104,7 @@ def add_incident(location, stat, description, color, highlighted):
     return 'Added'
 
 def add_request(id, category, name, email, image):
+    request_id = push.next_id()
     if image:
         filename = uuid.uuid4().hex + "." + image.filename.split(".")[-1]
         bucket.upload_fileobj(image, filename, ExtraArgs={'ACL': 'public-read'})
@@ -111,29 +112,30 @@ def add_request(id, category, name, email, image):
         print(url)
     else: 
         url = False
-    datab().child('requests2').child(id).push({ "Title": category, "Description": name, "Email": email, "url": url })
+    #Do the NLP stuff
+    r.extract_keywords_from_text(name)
+    r2.extract_keywords_from_text(category)
+    phrases = r.get_ranked_phrases()
+    phrases.extend(r2.get_ranked_phrases())
+    print(phrases)
+    phrases = list(dict.fromkeys(phrases))
+    tags = sp(" ".join(phrases))
+    for tag in tags:
+        if tag.lemma_ != "-PRON-":
+            print(tag.lemma_)
+            datab().child('tags').child(tag.lemma_).push({ "disaster": id, "request": request_id }) 
+    datab().child('requests2').child(id).child(request_id).set({ "Title": category, "Description": name, "Email": email, "url": url })
     return 'Added'        
-    # if items:
-    #     for item in items:
-    #         for key in item:
-    #             if key == category:
-    #                 cat = []
-    #                 for thing in item[key]:
-    #                     cat.append(thing)
-    #                 cat.append(name)
-    #                 data = ', '.join(cat)
-    #                 datab().child('requests').child(id).update({key: data})
-    #                 return 'Added'
-    #     datab().child('requests').child(id).update({category: name})
-    #     return 'Added'
-    # else:
-    #     datab().child('requests').child(id).update({category: name})
-    #     return 'Added'
 
+def get_tags():
+    return list(get_db()['tags'].keys())
 
-# Here is how all these functions will work:
-
-# add_incident('Phoenix, Arizona, USA', 'statistic', 'description', 'green', False)
-# add_request('b38ec649600b4c83bbe18801d0ccb45c', 'services', 'food distribution')
-# get_id('0db5a17b2a7c49bfbf7718051f17949a')
-# get_all()
+def get_tag(tag):
+    info = get_db()['tags'][tag].values()
+    posts = []
+    for tag in info:
+        post = get_db()['requests2'][tag['disaster']][tag['request']]
+        post['location'] = get_db()['all'][tag['disaster']]['location']
+        post['color'] = get_db()['all'][tag['disaster']]['color']
+        posts.append(post)
+    return posts

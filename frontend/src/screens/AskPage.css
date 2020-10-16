@@ -66,6 +66,8 @@ html, body {
   border-radius: 20px;
   padding: 30px;
   margin-bottom: 30px;
+  color: white;
+  text-align: left;
 }
 
 .dropzone {
@@ -86,4 +88,9 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.locText {
+  -webkit-text-stroke-width: 0.3px;
+  -webkit-text-stroke-color: white;
 }

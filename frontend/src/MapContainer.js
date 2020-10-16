@@ -123,7 +123,7 @@ class MapContainer extends Component {
             method: 'POST',
             body: form,
             redirect: 'follow'
-        }).then(res => console.log(res)).catch(e => alert(e))
+        }).then(res => console.log(res))
 
         console.log(this.loc.value, this.disasterColor[type], this.descrip.value, this.stat.value)
     }

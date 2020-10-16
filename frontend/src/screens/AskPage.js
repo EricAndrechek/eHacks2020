@@ -114,7 +114,7 @@ export default class AskPage extends Component {
         {
           this.state.loaded && (
             <div className="currentRequests">
-              <h1 className="currentHeader">Provide Help to Others in <span style={{ color: this.state.details.color }}>{this.state.details.location}</span></h1> 
+              <h1 className="currentHeader">Provide Help to Others in <span style={{ color: this.state.details.color }} className="locText">{this.state.details.location}</span></h1> 
               {
                 this.state.data.length > 0 ? this.state.data.map(req => (
                   <div className="request">

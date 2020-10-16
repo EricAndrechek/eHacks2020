@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, redirect
 from flask_cors import CORS, cross_origin
-from db import get_all, get_id, add_incident, add_request, get_coords, get_near
+from db import get_all, get_id, add_incident, add_request, get_coords, get_near, get_tags, get_tag
 from countryCode import to_code, to_name
 from ipchecker import pass_address
 import sys
@@ -78,12 +78,19 @@ def request_things():
 @app.route('/near', methods=['POST'])
 def near():
     return jsonify(get_near(request.form.get('address', False)))
+
+@app.route('/tags', methods=['GET'])
+def all_tags():
+    return jsonify(get_tags())
+
+@app.route('/tag', methods=['GET'])
+def specific_tag():
+    return jsonify(get_tag(request.args.get('id')))
     
     
 @app.route('/sms', methods=['POST', 'GET'])
 def sms():
     return { "say": "MANGYAT MOMEEEEEEEEEENT" }
     
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

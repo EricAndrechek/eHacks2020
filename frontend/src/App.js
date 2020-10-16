@@ -10,8 +10,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Switch, Route, Router } from 'react-router-dom';
 import AskPage from './screens/AskPage';
 import history from './history';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import { url } from './global'
+import { Button } from 'react-bootstrap'
 
 class Home extends Component {
+
+	componentDidMount(){
+		this.getTags()
+	}
+
+	getTags = () => {
+		fetch(`${url}/tags`).then(res => res.json()).then(tags => {
+			console.log(tags)
+			this.setState({ tags })
+		})
+	}
+
+	state = {
+		posts: [],
+		tags: []
+	}
+
+	updateRequests = tag => {
+		fetch(`${url}/tag?id=${tag}`).then(res => res.json()).then(res => this.setState({ posts: res }))
+	}
+
 	render(){
 		return ( 
 			<div className = "App">
@@ -51,6 +76,30 @@ class Home extends Component {
 					}}
 				/>
 				<MapContainer history={this.props.history}/>
+				<div className="search">
+					<h2 style={{ color: 'white', marginBottom: 10 }}>Find out how you can help!</h2>
+					<p style={{ color: 'white', marginBottom: 20, fontSize: 20 }}>Just type in what you can contribute into the search box.</p>
+					<Typeahead 
+						onChange={selected => this.updateRequests(selected)}
+						options={this.state.tags}
+						placeholder="Ex: tutor, money, awareness"
+						minLength={1}
+						style={{ marginBottom: 20 }}
+					/>
+					{
+						this.state.posts.map(req => (
+							<div className="request">
+							  <p style={{ fontSize: 20 }}><i>Located in</i> <span style={{ color: req.color }} className="locationText">{req.location}</span></p>
+							  <h4>{req.Title}</h4>
+							  <p style={{ whiteSpace: "pre-line" }}>{req.Description}</p>
+							  <div style={{ width: '100%', marginBottom: 15 }}>
+								{ req.url && <img src={req.url} style={{ height: 200, maxWidth: '100%' }}/> }
+							  </div>
+							  <Button variant="success" href={"mailto:" + req.Email}>Help out!</Button>{' '}
+							</div>
+						  ))
+					}
+				</div>
 			</div>
 		);
 	}

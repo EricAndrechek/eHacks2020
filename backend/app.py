@@ -7,6 +7,9 @@ import sys
 import math
 from secrets import get_maps
 from threading import Thread
+from twilio.twiml.messaging_response import MessagingResponse
+from db import datab, get_near
+import json
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -91,10 +94,51 @@ def all_tags():
 def specific_tag():
     return jsonify(get_tag(request.args.get('id')))
     
-    
 @app.route('/sms', methods=['POST', 'GET'])
 def sms():
-    return { "say": "MANGYAT MOMEEEEEEEEEENT" }
-    
+    body = request.values.get('Body', None)
+    pn = str(request.values.get('From', None))
+    response = MessagingResponse()
+    sms_logs = json.loads(json.dumps(datab().get().val()))['sms']
+    if pn in sms_logs:
+        step = int(sms_logs[pn]['step'])
+        if step == 0:
+            nearby, lat, lng = get_near(body)
+            resp = ""
+            data = {}
+            last_num = 0
+            for location in nearby:
+                resp = resp + "{}. {}\n".format(last_num + 1, location)
+                data[str(last_num + 1)] = location
+                last_num += 1
+            resp = resp + "{}. None of the above".format(last_num + 1)
+            data[str(last_num + 1)] = "None of the above"
+            response.message("Please choose a location from the following by typing the number:\n" + resp)
+            datab().child('sms').child(pn).update({'lat': lat, 'lng': lng, 'step': '1'})
+            datab().child('sms').child(pn).child('options').update(data)
+        elif step == 1:
+            try:
+                datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][body], 'step': '2'})
+                response.message('Great, what would you like to title your request?')
+            except:
+                response.message('Unable to find an option matching that number. Please try again.')
+        elif step == 2:
+            datab().child('sms').child(pn).update({'title': body, 'step': '3'})
+            response.message('Done, now I need your email.')
+        elif step == 3:
+            datab().child('sms').child(pn).update({'email': body, 'step': '4'})
+            response.message('Fantastic! Please enter the description of everything and anything you need.')
+        elif step == 4:
+            datab().child('sms').child(pn).update({'needs': body, 'step': '5'})
+            response.message('Thanks! Your request is being processed and should show up on DHI\'s map shortly.')
+            # somehow add all this data to DHI stuff
+    else:
+        data  =  {'step': '0'}
+        datab().child('sms').child(pn).set(data)
+        response.message('Hi there and welcome to the Disaster Help Index Chat Bot! \
+        To get things started, please tell me your current address.')
+
+    return str(response)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

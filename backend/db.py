@@ -85,7 +85,7 @@ def get_near(address):
             print(distance, disaster['location'])
         if included:
             near.append(disaster)
-    return near
+    return near, location['lat'], location['lng']
 
 def add_incident(location, stat, description, color, highlighted):
     id = uuid.uuid4().hex

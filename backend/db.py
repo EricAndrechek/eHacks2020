@@ -84,8 +84,9 @@ def get_near(address):
             included = distance or within
             print(distance, disaster['location'])
         if included:
+            disaster["id"] = id
             near.append(disaster)
-    return near, location['lat'], location['lng']
+    return near
 
 def add_incident(location, stat, description, color, highlighted):
     id = uuid.uuid4().hex
@@ -100,6 +101,7 @@ def add_incident(location, stat, description, color, highlighted):
         r = get_coords(location)
         data['lat'] = r[0]['lat']
         data['lng'] = r[0]['lng']
+        data['viewport'] = get_viewport(location)
     datab().child('all').child(id).set(data)
     return 'Added'
 

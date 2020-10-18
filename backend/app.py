@@ -101,7 +101,7 @@ def sms():
     sms_logs = json.loads(json.dumps(datab().get().val()))['sms']
     if body.upper() == "RESTART":
         datab().child('sms').child(pn).remove()
-        response.response("Your chat logs have been reset. Reply to this message to start a new request.")
+        response.message("Your chat logs have been reset. Reply to this message to start a new request.")
     else:
         if pn in sms_logs:
             step = int(sms_logs[pn]['step'])

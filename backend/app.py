@@ -111,6 +111,7 @@ def sms():
                     data = {}
                     last_num = 0
                     for location in nearby:
+                        print(location)
                         opt = location.location + ": " + location.description
                         resp = resp + "{}. {}\n".format(last_num + 1, opt)
                         data[str(last_num + 1)] = location.id

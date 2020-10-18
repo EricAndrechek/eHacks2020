@@ -41,8 +41,7 @@ def add_disaster():
     print(ip)
     if color and stat and description and location:
         highlighted, location = to_code(location)
-        passed = pass_address(ip, location)
-        print(passed, flush=True)
+        passed = 'ok'
         if passed == "ok" or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "192.168.86.41" or ip == "192.168.1.80": # allow localhost and my IP to bypass IP verification
             return add_incident(location, stat, description, color, highlighted)
         else:
@@ -71,7 +70,7 @@ def request_things():
             location = get_all()[uuid]['location']
         except KeyError:
             return "Error: disaster must be created before you can request things for it"
-        if pass_address(ip, location) or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "192.168.86.41" or ip == "192.168.1.80": # allow localhost and my IP to bypass IP verification
+        if ip or ip == "76.112.42.21" or ip == "192.168.86.1" or ip == "192.168.86.41" or ip == "192.168.1.80": # allow localhost and my IP to bypass IP verification
             request_id = add_request(uuid, category, item, email, image)
             thread = Thread(target=nlp, kwargs={ 'name': item, 'category': category, 'id': uuid, 'request_id': request_id })
             thread.start()
@@ -100,43 +99,61 @@ def sms():
     pn = str(request.values.get('From', None))
     response = MessagingResponse()
     sms_logs = json.loads(json.dumps(datab().get().val()))['sms']
-    if pn in sms_logs:
-        step = int(sms_logs[pn]['step'])
-        if step == 0:
-            nearby, lat, lng = get_near(body)
-            resp = ""
-            data = {}
-            last_num = 0
-            for location in nearby:
-                resp = resp + "{}. {}\n".format(last_num + 1, location)
-                data[str(last_num + 1)] = location
-                last_num += 1
-            resp = resp + "{}. None of the above".format(last_num + 1)
-            data[str(last_num + 1)] = "None of the above"
-            response.message("Please choose a location from the following by typing the number:\n" + resp)
-            datab().child('sms').child(pn).update({'lat': lat, 'lng': lng, 'step': '1'})
-            datab().child('sms').child(pn).child('options').update(data)
-        elif step == 1:
-            try:
-                datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][body], 'step': '2'})
-                response.message('Great, what would you like to title your request?')
-            except:
-                response.message('Unable to find an option matching that number. Please try again.')
-        elif step == 2:
-            datab().child('sms').child(pn).update({'title': body, 'step': '3'})
-            response.message('Done, now I need your email.')
-        elif step == 3:
-            datab().child('sms').child(pn).update({'email': body, 'step': '4'})
-            response.message('Fantastic! Please enter the description of everything and anything you need.')
-        elif step == 4:
-            datab().child('sms').child(pn).update({'needs': body, 'step': '5'})
-            response.message('Thanks! Your request is being processed and should show up on DHI\'s map shortly.')
-            # somehow add all this data to DHI stuff
+    if body.upper() == "RESTART":
+        response.response("Your chat logs have been reset. Reply to this message to start a new request.")
     else:
-        data  =  {'step': '0'}
-        datab().child('sms').child(pn).set(data)
-        response.message('Hi there and welcome to the Disaster Help Index Chat Bot! \
-        To get things started, please tell me your current address.')
+        if pn in sms_logs:
+            step = int(sms_logs[pn]['step'])
+            if step == 0:
+                nearby = get_near(body)
+                if len(nearby) > 0:
+                    resp = ""
+                    data = {}
+                    last_num = 0
+                    for location in nearby:
+                        resp = resp + "{}. {}\n".format(last_num + 1, location)
+                        data[str(last_num + 1)] = location
+                        last_num += 1
+                    resp = resp + "{}. None of the above".format(last_num + 1)
+                    data[str(last_num + 1)] = "None of the above"
+                    response.message("Please choose a location from the following by typing the number:\n" + resp)
+                    datab().child('sms').child(pn).update({'step': '1'})
+                    datab().child('sms').child(pn).child('options').update(data)
+                else:
+                    response.message('No disaster could be found near that location. Please text RESTART to start over, or add a disaster on the website.')
+            elif step == 1:
+                try:
+                    datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][body], 'step': '2'})
+                    response.message('Great, what would you like to title your request?')
+                except:
+                    response.message('Unable to find an option matching that number. Please try again.')
+            elif step == 2:
+                datab().child('sms').child(pn).update({'title': body, 'step': '3'})
+                response.message('Done, now I need your email.')
+            elif step == 3:
+                datab().child('sms').child(pn).update({'email': body, 'step': '4'})
+                response.message('Fantastic! Please enter the description of everything and anything you need.')
+            elif step == 4:
+                datab().child('sms').child(pn).update({'needs': body, 'step': '5'})
+                response.message('Thanks! Your request is being processed and should show up on DHI\'s map shortly. To submit another request, reply RESTART')
+                
+
+                # put this data into request database:
+                uuid = False
+                category = 'title'
+                item = 'description'
+                email = 'email'
+                image = False
+                request_id = add_request(uuid, category, item, email, image)
+                thread = Thread(target=nlp, kwargs={ 'name': item, 'category': category, 'id': uuid, 'request_id': request_id })
+                thread.start()
+            else:
+                response.message('An error occurred, please try again. If the issue persists, contact DHI.')
+        else:
+            data  =  {'step': '0'}
+            datab().child('sms').child(pn).set(data)
+            response.message('Hi there and welcome to the Disaster Help Index Chat Bot! \
+            To get things started, please tell me your current address.')
 
     return str(response)
 

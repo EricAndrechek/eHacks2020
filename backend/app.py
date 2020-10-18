@@ -123,9 +123,7 @@ def sms():
                     response.message('No disaster could be found near that location. Please text RESTART to start over, or add a disaster on the website.')
             elif step == 1:
                 try:
-                    print(sms_logs[pn]['options'])
-                    print(body)
-                    req_loc = sms_logs[pn]['options'][body]
+                    req_loc = sms_logs[pn]['options'][int(body.strip())]
                 except KeyError:
                     response.message('Unable to find an option matching that number. Please try again.')
                     return str(response)

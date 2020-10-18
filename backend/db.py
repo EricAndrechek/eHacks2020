@@ -82,7 +82,6 @@ def get_near(address):
             lng2 = viewport['southwest']['lng']
             within = (lat1 <= location['lat'] <= lat2 or lat2 <= location['lat'] <= lat1) and (lng1 <= location['lng'] <= lng2 or lng2 <= location['lng'] <= lng1)
             included = distance or within
-            print(distance, disaster['location'])
         if included:
             disaster["id"] = id
             near.append(disaster)
@@ -111,7 +110,6 @@ def add_request(id, category, name, email, image):
         filename = uuid.uuid4().hex + "." + image.filename.split(".")[-1]
         bucket.upload_fileobj(image, filename, ExtraArgs={'ACL': 'public-read'})
         url = "https://cong-dhi.s3.us-east-2.amazonaws.com/" + filename  
-        print(url)
     else: 
         url = False
     datab().child('requests2').child(id).child(request_id).set({ "Title": category, "Description": name, "Email": email, "url": url })
@@ -122,12 +120,10 @@ def nlp(name, category, id, request_id):
     r2.extract_keywords_from_text(category)
     phrases = r.get_ranked_phrases()
     phrases.extend(r2.get_ranked_phrases())
-    print(phrases)
     phrases = list(dict.fromkeys(phrases))
     tags = sp(" ".join(phrases))
     for tag in tags:
         if tag.lemma_ != "-PRON-":
-            print(tag.lemma_)
             datab().child('tags').child(tag.lemma_).push({ "disaster": id, "request": request_id }) 
 
 def get_tags():

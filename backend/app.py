@@ -99,7 +99,7 @@ def sms():
     pn = str(request.values.get('From', None))
     response = MessagingResponse()
     sms_logs = json.loads(json.dumps(datab().get().val()))['sms']
-    if body.upper() == "RESTART":
+    if body.upper().strip() == "RESTART":
         datab().child('sms').child(pn).remove()
         response.message("Your chat logs have been reset. Reply to this message to start a new request.")
     else:
@@ -123,7 +123,7 @@ def sms():
                     response.message('No disaster could be found near that location. Please text RESTART to start over, or add a disaster on the website.')
             elif step == 1:
                 try:
-                    datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][body], 'step': '2'})
+                    datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][str(body)], 'step': '2'})
                     response.message('Great, what would you like to title your request?')
                 except:
                     response.message('Unable to find an option matching that number. Please try again.')

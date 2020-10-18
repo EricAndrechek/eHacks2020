@@ -111,11 +111,10 @@ def sms():
                     data = {}
                     last_num = 0
                     for location in nearby:
-                        resp = resp + "{}. {}\n".format(last_num + 1, location)
-                        data[str(last_num + 1)] = location
+                        opt = location.location + ": " + location.description
+                        resp = resp + "{}. {}\n".format(last_num + 1, opt)
+                        data[str(last_num + 1)] = location.id
                         last_num += 1
-                    resp = resp + "{}. None of the above".format(last_num + 1)
-                    data[str(last_num + 1)] = "None of the above"
                     response.message("Please choose a location from the following by typing the number:\n" + resp)
                     datab().child('sms').child(pn).update({'step': '1'})
                     datab().child('sms').child(pn).child('options').update(data)
@@ -136,13 +135,13 @@ def sms():
             elif step == 4:
                 datab().child('sms').child(pn).update({'needs': body, 'step': '5'})
                 response.message('Thanks! Your request is being processed and should show up on DHI\'s map shortly. To submit another request, reply RESTART')
-                
 
                 # put this data into request database:
-                uuid = False
-                category = 'title'
-                item = 'description'
-                email = 'email'
+                ud = json.loads(json.dumps(datab().get().val()))['sms'][pn]
+                uuid = ud['req_loc']
+                category = ud['title']
+                item = ud['needs']
+                email = ud['email']
                 image = False
                 request_id = add_request(uuid, category, item, email, image)
                 thread = Thread(target=nlp, kwargs={ 'name': item, 'category': category, 'id': uuid, 'request_id': request_id })

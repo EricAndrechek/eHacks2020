@@ -1,2 +1,2 @@
-export const url = 'https://2e392d0cd8bc.ngrok.io'
-export const main = 'https://dhi.andrechek.com' 
+export const url = 'https://dhi.andrechek.com' 
+export const number = '+17472477499'

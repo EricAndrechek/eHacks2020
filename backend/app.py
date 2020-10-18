@@ -111,10 +111,9 @@ def sms():
                     data = {}
                     last_num = 0
                     for location in nearby:
-                        print(location)
-                        opt = location.location + ": " + location.description
+                        opt = location['location'] + ": " + location['description']
                         resp = resp + "{}. {}\n".format(last_num + 1, opt)
-                        data[str(last_num + 1)] = location.id
+                        data[str(last_num + 1)] = location['id']
                         last_num += 1
                     response.message("Please choose a location from the following by typing the number:\n" + resp)
                     datab().child('sms').child(pn).update({'step': '1'})

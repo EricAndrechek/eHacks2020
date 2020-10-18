@@ -16,7 +16,7 @@ cors = CORS(app)
 
 @app.route('/')
 def home():
-    return redirect('https://e-hacks2020.vercel.app')
+    return redirect('https://dhi.vercel.app')
 
 @app.route("/all", methods = ['GET'])
 def all_disaster_data():
@@ -123,10 +123,14 @@ def sms():
                     response.message('No disaster could be found near that location. Please text RESTART to start over, or add a disaster on the website.')
             elif step == 1:
                 try:
-                    datab().child('sms').child(pn).update({'req_loc': sms_logs[pn]['options'][str(body)], 'step': '2'})
-                    response.message('Great, what would you like to title your request?')
-                except:
+                    print(sms_logs[pn]['options'])
+                    print(body)
+                    req_loc = sms_logs[pn]['options'][body]
+                except KeyError:
                     response.message('Unable to find an option matching that number. Please try again.')
+                    return str(response)
+                datab().child('sms').child(pn).update({'req_loc': req_loc, 'step': '2'})
+                response.message('Great, what would you like to title your request?')
             elif step == 2:
                 datab().child('sms').child(pn).update({'title': body, 'step': '3'})
                 response.message('Done, now I need your email.')

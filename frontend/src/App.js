@@ -34,7 +34,17 @@ class Home extends Component {
 	}
 
 	updateRequests = tag => {
-		fetch(`${url}/tag?id=${tag}`).then(res => res.json()).then(res => this.setState({ posts: res }))
+		fetch(`${url}/tag?id=${tag}`).then(res => res.json()).then(res => {
+			const done = []
+			const unique = []
+			for (var i = 0; i < res.length; i++) {
+				if (!done.includes(res[i].Description)) {
+					done.push(res[i].Description)
+					unique.push(res[i])
+				}
+			}
+			this.setState({ posts: unique })
+		})
 	}
 
 	render(){
